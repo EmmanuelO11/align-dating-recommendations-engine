@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven { url = "https://jitpack.io" }
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.2.0"
+    }
+}
+
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.0'
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+group "com.aligndating"
+version "0.0.1"
+mainClassName = "com.aligndating.ApplicationKt"
+
+// This task will generate your fat JAR and put it in the ./build/libs/ directory
+shadowJar {
+    baseName = 'align-dating-server'
+    classifier = null
+    version = null
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers" }
+        maven { url = 'https://jitpack.io' }
+        maven { url = "https://s01.oss.sonatype.org/content/repositories/snapshots" }
+    }
+}
+
+dependencies {
+    // kotlin
+    implementation "org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.3"
+    implementation "org.jetbrains:kotlin-css-jvm:1.0.0-pre.129-kotlin-1.4.20"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    // ktor
+    implementation "io.ktor:ktor-html-builder:$ktor_version"
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    implementation "io.ktor:ktor-serialization:$ktor_version"
+    implementation "io.ktor:ktor-server-host-common:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+
+    // logging
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation("com.koriit.kotlin:slf4j-utils:0.8.0")
+
+    //KMongo
+    implementation "org.litote.kmongo:kmongo-coroutine:$kmongo_version"
+
+    // Koin for Kotlin apps
+    implementation "io.insert-koin:koin-ktor:$koin_version"
+    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-logger-slf4j:$koin_version"
+
+    // redis
+    implementation('redis.clients:jedis:4.3.1')
+
+    // rabbit mq
+    implementation("com.rabbitmq:amqp-client:5.9.0")
+
+    // test
+    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+}
+
+task stage(type: Copy, dependsOn: ['build', 'clean', 'shadowJar']) {
+    from 'build/libs/align-dating-server.jar'
+    into project.rootDir
+    rename {
+        'app.jar'
+    }
+}
+stage.mustRunAfter(clean)
