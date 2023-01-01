@@ -25,7 +25,19 @@ object RecommendationEngineConsumer {
         val channel = rabbitMqConnection.createChannel()
         val consumerTag = "recommendationConsumerForNewUserAdded"
 
-        channel.queueDeclare(QUEUE_NEW_USER_ADDED, false, false, false, null)
+        channel.queueDeclare(
+            QUEUE_NEW_USER_ADDED, false, false, false, null
+        )
+        val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
+            val message = String(delivery.body, StandardCharsets.UTF_8)
+            logger.info("[$ct] Received message: '$message'")
+        }
+        val cancelCallback = CancelCallback { ct: String? ->
+            logger.info("[$ct] was canceled")
+        }
+
+        channel.basicConsume(QUEUE_NEW_USER_ADDED, true, consumerTag, deliverCallback, cancelCallback)
     }
 
     private suspend fun startConsumerForUserRemovedEvents(rabbitMqConnection: Connection) {
@@ -33,7 +45,19 @@ object RecommendationEngineConsumer {
         val channel = rabbitMqConnection.createChannel()
         val consumerTag = "recommendationConsumerForUserRemovedEvent"
 
-        channel.queueDeclare(QUEUE_USER_REMOVED_FROM_AREA, false, false, false, null)
+        channel.queueDeclare(
+            QUEUE_USER_REMOVED_FROM_AREA, false, false, false, null
+        )
+        val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
+            val message = String(delivery.body, StandardCharsets.UTF_8)
+            logger.info("[$ct] Received message: '$message'")
+        }
+        val cancelCallback = CancelCallback { ct: String? ->
+            logger.info("[$ct] was canceled")
+        }
+
+        channel.basicConsume(QUEUE_USER_REMOVED_FROM_AREA, true, consumerTag, deliverCallback, cancelCallback)
     }
 
     private suspend fun startConsumerForUserDistancePreferenceChanged(rabbitMqConnection: Connection) {
@@ -41,7 +65,19 @@ object RecommendationEngineConsumer {
         val channel = rabbitMqConnection.createChannel()
         val consumerTag = "recommendationConsumerForUserDistancePreferenceChangedEvent"
 
-        channel.queueDeclare(QUEUE_USER_DISTANCE_PREFERENCE_CHANGED, false, false, false, null)
+        channel.queueDeclare(
+            QUEUE_USER_DISTANCE_PREFERENCE_CHANGED, false, false, false, null
+        )
+        val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
+            val message = String(delivery.body, StandardCharsets.UTF_8)
+            logger.info("[$ct] Received message: '$message'")
+        }
+        val cancelCallback = CancelCallback { ct: String? ->
+            logger.info("[$ct] was canceled")
+        }
+
+        channel.basicConsume(QUEUE_USER_DISTANCE_PREFERENCE_CHANGED, true, consumerTag, deliverCallback, cancelCallback)
     }
 
     private suspend fun startConsumerForUserGenderPreferenceChanged(rabbitMqConnection: Connection) {
@@ -49,7 +85,19 @@ object RecommendationEngineConsumer {
         val channel = rabbitMqConnection.createChannel()
         val consumerTag = "recommendationConsumerForUserGenderPreferenceChangedEvent"
 
-        channel.queueDeclare(QUEUE_USER_GENDER_PREFERENCE_CHANGED, false, false, false, null)
+        channel.queueDeclare(
+            QUEUE_USER_GENDER_PREFERENCE_CHANGED, false, false, false, null
+        )
+        val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
+            val message = String(delivery.body, StandardCharsets.UTF_8)
+            logger.info("[$ct] Received message: '$message'")
+        }
+        val cancelCallback = CancelCallback { ct: String? ->
+            logger.info("[$ct] was canceled")
+        }
+
+        channel.basicConsume(QUEUE_USER_GENDER_PREFERENCE_CHANGED, true, consumerTag, deliverCallback, cancelCallback)
     }
 
     private suspend fun startConsumerForUserSuperLikedEvents(rabbitMqConnection: Connection) {
@@ -58,6 +106,16 @@ object RecommendationEngineConsumer {
         val consumerTag = "recommendationConsumerForUserSuperLikedEvent"
 
         channel.queueDeclare(QUEUE_USER_SUPER_LIKED, false, false, false, null)
+        val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
+            val message = String(delivery.body, StandardCharsets.UTF_8)
+            logger.info("[$ct] Received message: '$message'")
+        }
+        val cancelCallback = CancelCallback { ct: String? ->
+            logger.info("[$ct] was canceled")
+        }
+
+        channel.basicConsume(QUEUE_USER_SUPER_LIKED, true, consumerTag, deliverCallback, cancelCallback)
     }
 
     private suspend fun startConsumerForUserAccountDeletedEvents(rabbitMqConnection: Connection) {
@@ -66,8 +124,8 @@ object RecommendationEngineConsumer {
         val consumerTag = "recommendationConsumerForUserAccountDeletedEvent"
 
         channel.queueDeclare(QUEUE_ACCOUNT_DELETED, false, false, false, null)
-
         val deliverCallback = DeliverCallback { ct: String, delivery: Delivery ->
+            // TODO here
             val message = String(delivery.body, StandardCharsets.UTF_8)
             logger.info("[$ct] Received message: '$message'")
         }
