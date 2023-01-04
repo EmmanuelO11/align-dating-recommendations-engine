@@ -11,6 +11,7 @@ import com.aligndating.recommendationengine.di.appModule
 import com.aligndating.recommendationengine.extensions.respondError
 import com.aligndating.recommendationengine.features.location.source.LocationDataSource
 import com.aligndating.recommendationengine.features.recommendation.consumer.RecommendationEngineConsumer
+import com.aligndating.recommendationengine.features.recommendation.engine.RecommendationEngine
 import com.aligndating.recommendationengine.plugins.configureCORS
 import com.aligndating.recommendationengine.rabbitmq.RabbitMQConnectionFactory
 import io.ktor.application.*
@@ -47,11 +48,11 @@ fun Application.module(testing: Boolean = false, koinModules: List<Module> = lis
     }
 
     // configure services
-    val databaseFactory by inject<DatabaseFactory>()
-    val databaseConnection = databaseFactory.connect(appConfig.databaseConfig)
+//    val databaseFactory by inject<DatabaseFactory>()
+//    val databaseConnection = databaseFactory.connect(appConfig.databaseConfig)
     val rabbitMQConnectionFactory by inject<RabbitMQConnectionFactory> { parametersOf(appConfig.rabbitMqConfig) }
     val rabbitMqConnection = rabbitMQConnectionFactory.connect(appConfig.rabbitMqConfig)
-    val locationDataSource: LocationDataSource by inject { parametersOf(databaseConnection) }
+    val recommendationEngine by inject<RecommendationEngine>()
 
 
     // configure features
@@ -89,6 +90,8 @@ fun Application.module(testing: Boolean = false, koinModules: List<Module> = lis
     }
     // start consumers
     launch {
-        RecommendationEngineConsumer.startAllConsumers(rabbitMqConnection = rabbitMqConnection)
+        RecommendationEngineConsumer.startAllConsumers(
+            rabbitMqConnection = rabbitMqConnection, coroutineScope = this, recommendationEngine = recommendationEngine
+        )
     }
 }
